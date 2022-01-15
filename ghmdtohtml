@@ -1,0 +1,15 @@
+#!/bin/sh
+# Transform GitHub-flavored Markdown to HTML
+
+# Known issues:
+# - Add named anchors to headings (at every level).
+# - Test tasklist ("- [ ] ")
+# - Add --nobreaks (After scripting an option to turn it off)
+
+if [ -z "$1" ]; then
+    echo "You must specify a file."
+    exit 1
+fi
+
+cmark-gfm --unsafe --validate-utf8 --strikethrough-double-tilde -e autolink -e footnotes -e strikethrough -e table -e tasklist $1
+
