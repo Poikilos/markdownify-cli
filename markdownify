@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 # import markdownify
-from markdownify import markdownify as md
-# from markdownify import markdownify as md
 import sys
 import os
 
-# If there is a circular import above or
-# module is not callable above, ensure that
-# this file isn't named markdownify.py!
-# Naming it markdownify is ok (It is not a
-# module if it doesn't have the py extension).
+try:
+    from markdownify import markdownify as md
+except ModuleNotFoundError as ex:
+    if "No module named 'markdownify'" in str(ex):
+        sys.stderr.write(str(ex)+"\n")
+        sys.stderr.flush()
+        raise ModuleNotFoundError("You must install markdownify such as via: python3 -m pip install --user markdownify")
+    else:
+        raise ex
+
+'''
+If there is a circular import above or module is not callable above,
+ensure that this file isn't named markdownify.py! Naming it markdownify
+is ok (It is not a module ONLY if it doesn't have the py extension).
+'''
 
 if __name__ == "__main__":
     filename = sys.argv[1]
@@ -17,15 +25,15 @@ if __name__ == "__main__":
         html = ins.read()
         # convert html to markdown
         sys.stderr.write("* reading \"{}\"...".format(filename))
-        sys.stderr.flush() 
+        sys.stderr.flush()
         mdS = md(html, heading_style="ATX")
         sys.stderr.write("OK\n")
         sys.stderr.flush()
         baseName = os.path.splitext(filename)[0]
         dstName = baseName + ".md"
         sys.stderr.write("* writing \"{}\"...".format(dstName))
-        sys.stderr.flush() 
+        sys.stderr.flush()
         with open(dstName, 'w') as outs:
             outs.write(mdS+"\n")
             sys.stderr.write("OK\n")
-            sys.stderr.flush() 
+            sys.stderr.flush()
